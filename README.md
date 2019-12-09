@@ -2,7 +2,7 @@
 
 flair models eat a lot of memory to hold word embeddings, e.g. the model `multi-ner-fast` requires a total of 5gig memory for a single prediction (as measured by mprof). This is unnecessary at inference stage, since the lookup of word vectors can you externalized to some database, e.g. sqlite. This pushes the memory requirement down to only 700mb. The running time goes up on the other hand, but this is relatively insignificant for larger inference jobs. Follow this example to test:
 
-Create db versions of the word embeddings, free memory, and write the smaller model to `tmp.pickle`:
+Create db versions of the word embeddings, free memory, and write the smaller model to `mulit-ner-fast-headless.pickle`:
 
 ```
 from WordEmbeddingsStore import WordEmbeddingsStore
