@@ -5,25 +5,30 @@ flair models eat a lot of memory to hold word embeddings, e.g. the model `multi-
 Create db versions of the word embeddings, free memory, and write the smaller model to `tmp.pickle`:
 
 ```
+from WordEmbeddingsStore import WordEmbeddingsStore
 from flair.models import SequenceTagger
 import pickle
-from dbwordembedding import *
 
 tagger = SequenceTagger.load('multi-ner-fast')
-create_db_word_embeddings(tagger)
-pickle.dump(tagger,open('tmp.pickle','wb'))
+WordEmbeddingsStore.create_stores(tagger)
+pickle.dump(tagger,open('multi-ner-fast-headless.pickle','wb'))
+
 ```
 
 Load the model and the db versions again and do inference with 700mb of memory:
 
 ```
+import pickle
 import time
 from flair.data import Sentence
+from WordEmbeddingsStore import WordEmbeddingsStore
 
-tagger = pickle.load(open('tmp.pickle','rb'))
-load_db_word_embeddings(tagger)
+tagger = pickle.load(open('multi-ner-fast-headless.pickle','rb'))
+WordEmbeddingsStore.load_stores(tagger)
 
-sentence = Sentence('Hier wohnt Hans Mustermann')
+text = '''Schade um den Ameisenbären. Lukas Bärfuss veröffentlicht Erzählungen aus zwanzig Jahren. Darin geht es immer wieder um das Scheitern beim Erzählen. Am 2. November wird Lukas Bärfuss in Darmstadt der Georg-Büchner-Preis überreicht. Da muss ein aktuelles Buch her, dachte sich der Wallstein-Verlag und bringt am heutigen Montag, in der Herbstvorschau noch nicht angekündigt, einen Band mit Erzählungen heraus. «Malinois» heisst er, nach einem belgischen Schäferhund, der in der zwölften von dreizehn Geschichten eine unglückliche Rolle spielt: Er wird von einem Lieferwagen angefahren.'''
+
+sentence = Sentence(text)
 t_start = time.time()
 tagger.predict(sentence)
 print('new processing time:',time.time()-t_start)

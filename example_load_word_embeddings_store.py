@@ -1,6 +1,5 @@
 import pickle
 import time
-from flair.models import SequenceTagger
 from flair.data import Sentence
 from WordEmbeddingsStore import WordEmbeddingsStore
 
